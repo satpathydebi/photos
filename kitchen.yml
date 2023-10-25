@@ -1,0 +1,12 @@
+driver:
+  name: vagrant
+provisioner:
+  chef-zero
+platforms:
+  - ubuntu-18
+suites:
+  - name: default
+  run_list:
+    - recipe[apache::httpd]
+  excludes:
+    - debian-10
