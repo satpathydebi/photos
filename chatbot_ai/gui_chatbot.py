@@ -2,7 +2,7 @@
 
 import tkinter as tk
 from tkinter import messagebox
-from vmware_api import list_vms, power_on_vm, power_off_vm
+from vmware_api import list_vms, power_on_vm, power_off_vm, get_vm_details_from_optum
 
 def handle_command():
     cmd = entry.get().strip().lower()
@@ -29,8 +29,16 @@ def handle_command():
                 output.insert(tk.END, result)
             else:
                 output.insert(tk.END, "⚠️ Please specify a VM name.")
+        elif cmd.startswith("optum vm details"):
+            parts = cmd.split()
+            if len(parts) >= 4:
+                token = parts[3]
+                data = get_vm_details_from_optum(token)
+                output.insert(tk.END, f"📦 Optum VM Details:\n{data}")
+            else:
+                output.insert(tk.END, "⚠️ Usage: optum vm details <Bearer_Token>")
         else:
-            output.insert(tk.END, "❓ Unknown command. Try 'list vms', 'power on <vm>', or 'power off <vm>'.")
+            output.insert(tk.END, "❓ Unknown command. Try 'list vms', 'power on <vm>', 'power off <vm>', or 'optum vm details <token>'.")
     except Exception as e:
         messagebox.showerror("Error", str(e))
 
@@ -38,21 +46,16 @@ def handle_command():
 root = tk.Tk()
 root.title("🖥️ VMware Chatbot")
 
-# Title label
 title_label = tk.Label(root, text="VMware Chatbot Interface", font=("Arial", 14))
 title_label.pack(pady=10)
 
-# Entry box
 entry = tk.Entry(root, width=50, font=("Arial", 12))
 entry.pack(pady=5)
 
-# Send button
 send_button = tk.Button(root, text="Send Command", command=handle_command, font=("Arial", 12))
 send_button.pack(pady=5)
 
-# Output area
 output = tk.Text(root, height=15, width=60, font=("Courier", 10))
 output.pack(pady=10)
 
-# Start GUI loop
 root.mainloop()

@@ -16,4 +16,8 @@ def parse_command(text):
         for ent in doc.ents:
             if ent.label_ == "ORG" or ent.label_ == "PRODUCT":
                 return ("power_off", ent.text)
+    elif "optum" in text and "vm" in text and "details" in text:
+        # Assume token is last word (you can enhance this with regex if needed)
+        token = text.split()[-1]
+        return ("optum_vm_details", token)
     return ("unknown", None)

@@ -4,6 +4,7 @@ from pyVim.connect import SmartConnect, Disconnect
 import ssl
 import config
 import atexit
+import requests
 
 def connect_to_vcenter():
     context = ssl._create_unverified_context()
@@ -57,3 +58,17 @@ def power_off_vm(vm_name):
                 else:
                     return f"{vm_name} is already powered off."
     return f"VM {vm_name} not found."
+
+def get_vm_details_from_optum(token, server="rpxx", env="prod", resource_state="all"):
+    url = f"https://cloudopsapi.optum.com/api/vrops_vm_details/?server={server}&env={env}&resource_state={resource_state}"
+    headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {
+            "error": f"Failed to fetch data. Status code: {response.status_code}, Message: {response.text}"
+        }
